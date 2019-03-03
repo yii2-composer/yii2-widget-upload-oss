@@ -1,0 +1,19 @@
+.uploaded-image-ul {
+    list-style: none;
+    margin: 4px 0px;
+    padding: 0px;
+    width: auto;
+}
+
+.uploaded-image-ul li {
+    display: list-item;
+    float: left;
+    text-align: center;
+    margin-right: 2px;
+    margin-bottom: 2px;
+}
+
+.delete-uploaded {
+    display: block;
+    cursor: pointer;
+}
