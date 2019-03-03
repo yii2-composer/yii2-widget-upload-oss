@@ -1,5 +1,5 @@
 {
-    "name": "mztest/yii2-widget-upload-oss",
+    "name": "liyifei/yii2-widget-upload-oss",
     "description": "A widget for uploading files to AliYun OSS",
     "homepage": "https://github.com/mztest/yii2-widget-upload-oss",
     "require": {
