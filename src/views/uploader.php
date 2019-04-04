@@ -79,7 +79,7 @@
 
     jQuery('#<?= $id ?>').on('fileuploaddone', function (e, data) {
         var isMultiple = <?= $isMultiple ?>;
-        var that = $(this), container = that.parents("[id$=container]");
+        var that = $(this), container = that.parents("[id=<?= $containerId ?>]");
         var uimgs = container.find("#<?= $inputId ?>-uploaded-image-ul");
         var uploaded = $("#<?= $inputId ?>").val();
 
