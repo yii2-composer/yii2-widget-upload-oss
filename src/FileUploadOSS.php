@@ -6,7 +6,7 @@
  * Time: 15:38
  */
 
-namespace mztest\uploadOSS;
+namespace liyifei\uploadOSS;
 
 use Yii;
 use yii\helpers\ArrayHelper;

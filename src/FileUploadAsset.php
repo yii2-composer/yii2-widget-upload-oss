@@ -5,7 +5,7 @@
  * Date: 2016/11/28
  * Time: 17:30
  */
-namespace mztest\uploadOSS;
+namespace liyifei\uploadOSS;
 
 use yii\web\AssetBundle;
 
