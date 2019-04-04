@@ -115,6 +115,8 @@ HTML;
     protected function renderInputGroup()
     {
         $uploadButtonContent = ArrayHelper::remove($this->uploadButtonOptions, 'content', Yii::t('app', 'Select File'));
+
+
         $uploadButtonContent .= Html::input('file', 'file', '', ['id' => $this->getUploadInputId(), 'multiple' => $this->multiple]);
 
         $uploadButton = Html::tag('span', $uploadButtonContent, $this->uploadButtonOptions);
@@ -163,6 +165,15 @@ HTML;
 
         $options = empty($this->clientOptions) ? '' : Json::htmlEncode($this->clientOptions);
 
+        $files = null;
+        if ($this->multiple) {
+            if ($this->model[$this->attribute]) {
+                $files = explode(',', $this->model[$this->attribute]);
+            }
+        } else {
+            $files = $this->model[$this->attribute];
+        }
+
         $js = $this->renderFile($this->getViewPath() . '/uploader.php', [
             'id' => $id,
             'inputId' => $this->options['id'],
@@ -171,7 +182,7 @@ HTML;
             'isImage' => $this->isImage,
             'ossHost' => $this->ossHost,
             'isMultiple' => $this->multiple ? 'true' : 'false',
-            'files' => $this->multiple ? explode(",", $this->model[$this->attribute]) : $this->model[$this->attribute]
+            'files' => $files
         ]);
         $view->registerJs($js);
 //        $js[] = "jQuery('#$id').fileupload($options);";

@@ -30,7 +30,7 @@
             $(".file-info", container).html(file.name);
             lastFile = file;
         });
-        fileUploadOSS.getSignature("<?= $signatureAction ?>", lastFile.name);
+        fileUploadOSS.getSignature("<?= $signatureAction ?>", lastFile.name, data);
     });
 
     jQuery('#<?= $id ?>').on('fileuploadprogressall', function (e, data) {
@@ -47,15 +47,21 @@
         $(".file-info", container).hide();
     });
 
+    /*
     jQuery('#<?= $id ?>').on('fileuploadsubmit', function (e, data) {
+        console.log(data);
+        return false;
         var that = $(this);
         data.url = fileUploadOSS.host;
         data.formData = fileUploadOSS.formData;
+
 
         if (!data.url) {
             return false;
         }
     });
+    */
+
 
     jQuery('#<?= $id ?>').on('fileuploadfail', function (e, data) {
         var that = $(this), container = that.parents("[id$=container]");
@@ -82,15 +88,15 @@
             } else {
                 uploaded = [];
             }
-            uploaded.push(fileUploadOSS.formData.key);
+            uploaded.push(data.formData.key);
             $("#<?= $inputId ?>").val(uploaded.join(","));
         } else {
-            $("#<?= $inputId ?>").val(fileUploadOSS.formData.key);
+            $("#<?= $inputId ?>").val(data.formData.key);
         }
 
         <?php if($isImage): ?>
-        var url = "<?= $ossHost ?>/" + fileUploadOSS.formData.key;
-        uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"" + fileUploadOSS.formData.key + "\">删除</a></li>");
+        var url = "<?= $ossHost ?>/" + data.formData.key;
+        uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"" + data.formData.key + "\">删除</a></li>");
         <?php endif; ?>
     });
 
@@ -101,12 +107,12 @@
             $("#<?= $inputId ?>").val("<?= implode(",", $files) ?>");
             <?php foreach($files as $file): ?>
                 var url = "<?= "$ossHost/$file" ?>";
-                uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"" + fileUploadOSS.formData.key + "\">删除</a></li>");
+                uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"<?= $file ?>\">删除</a></li>");
             <?php endforeach; ?>
         <?php else: ?>
             $("#<?= $inputId ?>").val("<?= $files ?>");
             var url = "<?= "$ossHost/$files" ?>";
-            uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"" + fileUploadOSS.formData.key + "\">删除</a></li>");
+            uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"<?= $files ?>\">删除</a></li>");
         <?php endif; ?>
     <?php endif; ?>
 
