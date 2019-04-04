@@ -39,38 +39,28 @@ fileUploadOSS.getSignature = function (url, filename, context) {
     }
     //可以判断当前expire是否超过了当前时间,如果超过了当前时间,就重新取一下.3s 做为缓冲
     var now = Date.parse(new Date()) / 1000;
-
-    $.ajax({
-        url: url,
-        dataType: 'json',
-        method: 'GET',
-        async: false,
-        success: function (data) {
-            fileUploadOSS.directory = data.directory;
-
-            context.formData = {
-                key: fileUploadOSS.generateObjectKey(filename),
-                policy: data.policy,
-                OSSAccessKeyId: data.accessKeyId,
-                success_action_status: '200', //让服务端返回200,不然，默认会返回204
-                callback: data.callback || '',
-                signature: data.signature,
-            };
-            context.url = data.host;
-            // fileUploadOSS.host = data.host;
-            // fileUploadOSS.directory = data.directory;
-            // fileUploadOSS.signatureExpire = parseInt(data.expire);
-            // $.extend(fileUploadOSS.formData, {
-            //     OSSAccessKeyId: data.accessKeyId,
-            //     policy: data.policy,
-            //     signature: data.signature,
-            //     callback: data.callback || ''
-            // });
-
-            context.submit();
-        }
-    });
-
+    // if (fileUploadOSS.signatureExpire < now + 3) {
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            method: 'GET',
+            async: false,
+            success: function (data) {
+                context.formData = context.formData || {};
+                context.url = data.host;
+                fileUploadOSS.host = data.host;
+                fileUploadOSS.directory = data.directory;
+                fileUploadOSS.signatureExpire = parseInt(data.expire);
+                $.extend(context.formData, {
+                    key: fileUploadOSS.generateObjectKey(filename),
+                    OSSAccessKeyId: data.accessKeyId,
+                    policy: data.policy,
+                    signature: data.signature,
+                    callback: data.callback || ''
+                });
+            }
+        });
+    // }
     // fileUploadOSS.generateObjectKey(filename);
 };
 fileUploadOSS.randomString = function (len) {
@@ -90,6 +80,6 @@ fileUploadOSS.generateObjectKey = function (filename) {
     if (pos != -1) {
         suffix = filename.substring(pos);
     }
-
     return fullFileName + suffix;
+    // fileUploadOSS.formData.key = fullFileName + suffix;
 };

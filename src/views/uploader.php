@@ -48,21 +48,16 @@
         $(".file-info", container).hide();
     });
 
-    /*
     jQuery('#<?= $id ?>').on('fileuploadsubmit', function (e, data) {
         console.log(data);
-        return false;
         var that = $(this);
         data.url = fileUploadOSS.host;
-        data.formData = fileUploadOSS.formData;
-
+        // data.formData = fileUploadOSS.formData;
 
         if (!data.url) {
             return false;
         }
     });
-    */
-
 
     jQuery('#<?= $id ?>').on('fileuploadfail', function (e, data) {
         var that = $(this), container = that.parents("[id=<?= $containerId ?>]");
@@ -90,8 +85,7 @@
                 uploaded = [];
             }
             uploaded.push(data.formData.key);
-            console.log(uploaded, "<?= $inputId ?>",  $("#<?= $inputId ?>"));
-            console.log($("#<?= $inputId ?>").val(uploaded.join(",")));
+            $("#<?= $inputId ?>").val(uploaded.join(","));
         } else {
             $("#<?= $inputId ?>").val(data.formData.key);
         }
@@ -105,7 +99,6 @@
     <?php if($files): ?>
         var container = jQuery('#<?= $id ?>').parents("[id=<?= $containerId ?>]");
         var uimgs = container.find("#<?= $inputId ?>-uploaded-image-ul");
-        console.log("<?= $inputId ?>",uimgs);
         <?php if (is_array($files)): ?>
             $("#<?= $inputId ?>").val("<?= implode(",", $files) ?>");
             <?php foreach($files as $file): ?>
