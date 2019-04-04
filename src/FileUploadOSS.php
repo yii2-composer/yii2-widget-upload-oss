@@ -170,7 +170,8 @@ HTML;
             'signatureAction' => $this->signatureAction,
             'isImage' => $this->isImage,
             'ossHost' => $this->ossHost,
-            'isMultiple' => $this->multiple ? 'true' : 'false'
+            'isMultiple' => $this->multiple ? 'true' : 'false',
+            'files' => $this->multiple ? explode(",", $this->model[$this->attribute]) : $this->model[$this->attribute]
         ]);
         $view->registerJs($js);
 //        $js[] = "jQuery('#$id').fileupload($options);";
