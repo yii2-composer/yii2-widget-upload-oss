@@ -166,16 +166,18 @@ HTML;
         $options = empty($this->clientOptions) ? '' : Json::htmlEncode($this->clientOptions);
 
         $files = null;
+        $inputValue = $this->model[$this->attribute] ? $this->model[$this->attribute] : ArrayHelper::getValue($this->options, 'value', '');
         if ($this->multiple) {
-            if ($this->model[$this->attribute]) {
-                $files = explode(',', $this->model[$this->attribute]);
+            if ($inputValue) {
+                $files = explode(',', $inputValue);
             }
         } else {
-            $files = $this->model[$this->attribute];
+            $files = $inputValue;
         }
 
         $js = $this->renderFile($this->getViewPath() . '/uploader.php', [
             'id' => $id,
+            'containerId' => $this->containerOptions['id'],
             'inputId' => $this->options['id'],
             'options' => $this->options,
             'signatureAction' => $this->signatureAction,

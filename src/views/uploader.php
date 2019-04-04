@@ -14,6 +14,7 @@
 // $ossHost
 // $isMultiple
 // $files
+// contanerId
 ?>
 
     jQuery('#<?= $id ?>').fileupload(<?= json_encode($options) ?>);
@@ -64,7 +65,7 @@
 
 
     jQuery('#<?= $id ?>').on('fileuploadfail', function (e, data) {
-        var that = $(this), container = that.parents("[id$=container]");
+        var that = $(this), container = that.parents("[id=<?= $containerId ?>]");
         $(".file-console", container).empty().html("<span class=\"text-danger\">" + data.errorThrown + ": 请联系管理员!</span>");
     });
 
@@ -101,8 +102,9 @@
     });
 
     <?php if($files): ?>
-        var container = jQuery('#<?= $id ?>').parents("[id$=container]");
+        var container = jQuery('#<?= $id ?>').parents("[id=<?= $containerId ?>]");
         var uimgs = container.find("#<?= $inputId ?>-uploaded-image-ul");
+        console.log("<?= $inputId ?>",uimgs);
         <?php if (is_array($files)): ?>
             $("#<?= $inputId ?>").val("<?= implode(",", $files) ?>");
             <?php foreach($files as $file): ?>
