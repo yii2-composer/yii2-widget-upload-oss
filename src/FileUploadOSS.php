@@ -158,96 +158,107 @@ HTML;
         FileUploadAsset::register($view);
         FileUploadBaseAsset::register($view);
 
-        $js = [];
+        // $js = [];
         $id = $this->getUploadInputId();
 
         $options = empty($this->clientOptions) ? '' : Json::htmlEncode($this->clientOptions);
-        $js[] = "jQuery('#$id').fileupload($options);";
 
-        $clientEvents = [
-            'fileuploadadd' => new JsExpression('function(e, data) {
-                var that = $(this), container = that.parents("[id$=container]");
-                $(".file-info", container).show().empty();
-                $(".progress", container).show().attr("aria-valuenow", 0)
-                    .children().first().css("width", "0%")
-                    .html("0");
-                $(".file-console", container).show().empty();
-                var lastFile;
-                $.each(data.files, function (index, file) {
-                    $(".file-info", container).html(file.name);
-                    lastFile = file;
-                });
-                fileUploadOSS.getSignature("' . $this->signatureAction . '", lastFile.name);
-            }'),
-            'fileuploadprogressall' => new JsExpression('function(e, data) {
-                if (e.isDefaultPrevented()) {
-                    return false;
-                }
-                var that = $(this), container = that.parents("[id$=container]");
-                var progress = Math.floor(data.loaded / data.total * 100);
-                
-                $(".progress", container).attr("aria-valuenow", progress)
-                    .children().first().css("width", progress + "%")
-                    .html(progress + "%");
-                $(".progress", container).hide();
-                $(".file-info", container).hide();    
-            }'),
-            'fileuploadsubmit' => new JsExpression('function(e, data) {
-                var that = $(this);
-                data.url = fileUploadOSS.host;
-                data.formData = fileUploadOSS.formData;
-                
-                if (!data.url) {
-                  return false;
-                }
-            }'),
-            'fileuploadfail' => new JsExpression('function(e, data) {
-                var that = $(this), container = that.parents("[id$=container]");
-                $(".file-console", container).empty().html("<span class=\"text-danger\">" + data.errorThrown + ": 请联系管理员!</span>");
-            }'),
-            'fileuploadprocessalways' => new JsExpression('function(e, data) {
-                var that = $(this), container = that.parents("[id$=container]"),
-                index = data.index, file = data.files[index];
-                if (file.error) {
-                    $(".file-console", container).empty().html("<span class=\"text-danger\">" + file.error + "</span>");
-                }
-            }'),
-            'fileuploaddone' => new JsExpression('function(e, data) {
-                var isMultiple = "' . $this->multiple . '";
-                var that = $(this), container = that.parents("[id$=container]");
-                var uimgs = container.find("#' . $this->options['id'] . '-uploaded-image-ul");
-                var uploaded = $("#' . $this->options['id'] . '").val();
-                
-                if(isMultiple) {
-                    if (uploaded) {
-                        uploaded = uploaded.split(",");
-                    } else {
-                        uploaded = [];
-                    }
-                    uploaded.push(fileUploadOSS.formData.key);
-                    $("#' . $this->options['id'] . '").val(uploaded.join(","));
-                } else {
-                    $("#' . $this->options['id'] . '").val(fileUploadOSS.formData.key);
-                }
-                
-                if( "' . $this->isImage . '" ) {
-                    var url = "' . $this->ossHost . '/" + fileUploadOSS.formData.key
-                    uimgs.append("<li><img src=\""+url+"\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"' . $this->options['id'] . '\" data-key=\""+fileUploadOSS.formData.key+"\">删除</a></li>");
-                } 
-            }'),
-        ];
-
-        if (!empty($clientEvents)) {
-            foreach ($clientEvents as $event => $handler) {
-                $js[] = "jQuery('#$id').on('$event', $handler);";
-            }
-        }
-
-        if (!empty($this->clientEvents)) {
-            foreach ($this->clientEvents as $event => $handler) {
-                $js[] = "jQuery('#$id').on('$event', $handler);";
-            }
-        }
-        $view->registerJs(implode("\n", $js));
+        $js = $this->renderFile($this->getViewPath() . '/uploader.php', [
+            'id' => $id,
+            'inputId' => $this->options['id'],
+            'options' => $this->options,
+            'signatureAction' => $this->signatureAction,
+            'isImage' => $this->isImage,
+            'ossHost' => $this->ossHost,
+            'isMultiple' => $this->multiple ? 'true' : 'false'
+        ]);
+        $view->registerJs($js);
+//        $js[] = "jQuery('#$id').fileupload($options);";
+//
+//        $clientEvents = [
+//            'fileuploadadd' => new JsExpression('function(e, data) {
+//                var that = $(this), container = that.parents("[id$=container]");
+//                $(".file-info", container).show().empty();
+//                $(".progress", container).show().attr("aria-valuenow", 0)
+//                    .children().first().css("width", "0%")
+//                    .html("0");
+//                $(".file-console", container).show().empty();
+//                var lastFile;
+//                $.each(data.files, function (index, file) {
+//                    $(".file-info", container).html(file.name);
+//                    lastFile = file;
+//                });
+//                fileUploadOSS.getSignature("' . $this->signatureAction . '", lastFile.name);
+//            }'),
+//            'fileuploadprogressall' => new JsExpression('function(e, data) {
+//                if (e.isDefaultPrevented()) {
+//                    return false;
+//                }
+//                var that = $(this), container = that.parents("[id$=container]");
+//                var progress = Math.floor(data.loaded / data.total * 100);
+//
+//                $(".progress", container).attr("aria-valuenow", progress)
+//                    .children().first().css("width", progress + "%")
+//                    .html(progress + "%");
+//                $(".progress", container).hide();
+//                $(".file-info", container).hide();
+//            }'),
+//            'fileuploadsubmit' => new JsExpression('function(e, data) {
+//                var that = $(this);
+//                data.url = fileUploadOSS.host;
+//                data.formData = fileUploadOSS.formData;
+//
+//                if (!data.url) {
+//                  return false;
+//                }
+//            }'),
+//            'fileuploadfail' => new JsExpression('function(e, data) {
+//                var that = $(this), container = that.parents("[id$=container]");
+//                $(".file-console", container).empty().html("<span class=\"text-danger\">" + data.errorThrown + ": 请联系管理员!</span>");
+//            }'),
+//            'fileuploadprocessalways' => new JsExpression('function(e, data) {
+//                var that = $(this), container = that.parents("[id$=container]"),
+//                index = data.index, file = data.files[index];
+//                if (file.error) {
+//                    $(".file-console", container).empty().html("<span class=\"text-danger\">" + file.error + "</span>");
+//                }
+//            }'),
+//            'fileuploaddone' => new JsExpression('function(e, data) {
+//                var isMultiple = "' . $this->multiple . '";
+//                var that = $(this), container = that.parents("[id$=container]");
+//                var uimgs = container.find("#' . $this->options['id'] . '-uploaded-image-ul");
+//                var uploaded = $("#' . $this->options['id'] . '").val();
+//
+//                if(isMultiple) {
+//                    if (uploaded) {
+//                        uploaded = uploaded.split(",");
+//                    } else {
+//                        uploaded = [];
+//                    }
+//                    uploaded.push(fileUploadOSS.formData.key);
+//                    $("#' . $this->options['id'] . '").val(uploaded.join(","));
+//                } else {
+//                    $("#' . $this->options['id'] . '").val(fileUploadOSS.formData.key);
+//                }
+//
+//                if( "' . $this->isImage . '" ) {
+//                    var url = "' . $this->ossHost . '/" + fileUploadOSS.formData.key
+//                    uimgs.append("<li><img src=\""+url+"\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"' . $this->options['id'] . '\" data-key=\""+fileUploadOSS.formData.key+"\">删除</a></li>");
+//                }
+//            }'),
+//        ];
+//
+//        if (!empty($clientEvents)) {
+//            foreach ($clientEvents as $event => $handler) {
+//                $js[] = "jQuery('#$id').on('$event', $handler);";
+//            }
+//        }
+//
+//        if (!empty($this->clientEvents)) {
+//            foreach ($this->clientEvents as $event => $handler) {
+//                $js[] = "jQuery('#$id').on('$event', $handler);";
+//            }
+//        }
+//        $view->registerJs(implode("\n", $js));
     }
 }
