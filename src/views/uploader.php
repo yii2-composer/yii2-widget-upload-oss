@@ -20,7 +20,7 @@
     jQuery('#<?= $id ?>').fileupload(<?= json_encode($options) ?>);
 
     jQuery('#<?= $id ?>').on('fileuploadadd', function (e, data) {
-        var that = $(this), container = that.parents("[id$=container]");
+        var that = $(this), container = that.parents("[id=<?= $containerId ?>]");
         $(".file-info", container).show().empty();
         $(".progress", container).show().attr("aria-valuenow", 0)
             .children().first().css("width", "0%")
@@ -38,7 +38,7 @@
         if (e.isDefaultPrevented()) {
             return false;
         }
-        var that = $(this), container = that.parents("[id$=container]");
+        var that = $(this), container = that.parents("[id=<?= $containerId ?>]");
         var progress = Math.floor(data.loaded / data.total * 100);
 
         $(".progress", container).attr("aria-valuenow", progress)
@@ -70,7 +70,7 @@
     });
 
     jQuery('#<?= $id ?>').on('fileuploadprocessalways', function (e, data) {
-        var that = $(this), container = that.parents("[id$=container]"),
+        var that = $(this), container = that.parents("[id=<?= $containerId ?>]"),
             index = data.index, file = data.files[index];
         if (file.error) {
             $(".file-console", container).empty().html("<span class=\"text-danger\">" + file.error + "</span>");
@@ -90,7 +90,8 @@
                 uploaded = [];
             }
             uploaded.push(data.formData.key);
-            $("#<?= $inputId ?>").val(uploaded.join(","));
+            console.log(uploaded, "<?= $inputId ?>",  $("#<?= $inputId ?>"));
+            console.log($("#<?= $inputId ?>").val(uploaded.join(",")));
         } else {
             $("#<?= $inputId ?>").val(data.formData.key);
         }
