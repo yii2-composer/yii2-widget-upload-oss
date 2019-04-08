@@ -92,7 +92,11 @@
 
         <?php if($isImage): ?>
         var url = "<?= $ossHost ?>/" + data.formData.key;
-        uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"" + data.formData.key + "\">删除</a></li>");
+        if (isMultiple) {
+            uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"" + data.formData.key + "\">删除</a></li>");
+        } else {
+            uimgs.html("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"" + data.formData.key + "\">删除</a></li>");
+        }
         <?php endif; ?>
     });
 
