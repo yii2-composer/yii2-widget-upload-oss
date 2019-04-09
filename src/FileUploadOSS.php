@@ -127,7 +127,11 @@ HTML;
             $input = Html::hiddenInput($this->name, $this->value, $this->options);
         }
 
-        $uploadedImages = '<div id="' . $this->options['id'] . '-uploaded-image-div"><ul id="' . $this->options['id'] . '-uploaded-image-ul" class="uploaded-image-ul clearfix"></ul></div>';
+        if ($this->isImage) {
+            $uploadedImages = '<div id="' . $this->options['id'] . '-uploaded-image-div"><ul id="' . $this->options['id'] . '-uploaded-image-ul" class="uploaded-image-ul clearfix"></ul></div>';
+        } else {
+            $uploadedImages = '<div id="' . $this->options['id'] . '-uploaded-image-div"><ul id="' . $this->options['id'] . '-uploaded-image-ul" class="uploaded-file-ul clearfix"></ul></div>';
+        }
 
         $inputGroupContent = strtr($this->inputTemplate, [
             '{input}' => $input,

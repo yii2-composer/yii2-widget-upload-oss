@@ -97,6 +97,13 @@
         } else {
             uimgs.html("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"" + data.formData.key + "\">删除</a></li>");
         }
+        <?php else: ?>
+        var url = "<?= $ossHost ?>/" + data.formData.key;
+        if (isMultiple) {
+            uimgs.append("<li><a href=\"" + url + "\" target=\"_blank\">" + data.formData.key + "</a><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"" + data.formData.key + "\">删除</a></li>");
+        } else {
+            uimgs.html("<li><a href=\"" + url + "\" target=\"_blank\">" + data.formData.key + "</a><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"" + data.formData.key + "\">删除</a></li>");
+        }
         <?php endif; ?>
     });
 
@@ -107,12 +114,20 @@
             $("#<?= $inputId ?>").val("<?= implode(",", $files) ?>");
             <?php foreach($files as $file): ?>
                 var url = "<?= "$ossHost/$file" ?>";
-                uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"<?= $file ?>\">删除</a></li>");
+                <?php if($isImage): ?>
+                    uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"<?= $file ?>\">删除</a></li>");
+                <?php else: ?>
+                    uimgs.append("<li><a href=\"" + url + "\" target=\"_blank\"><?= $file ?></a><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"<?= $file ?>\">删除</a></li>");
+                <?php endif; ?>
             <?php endforeach; ?>
         <?php else: ?>
             $("#<?= $inputId ?>").val("<?= $files ?>");
             var url = "<?= "$ossHost/$files" ?>";
-            uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"<?= $files ?>\">删除</a></li>");
+            <?php if($isImage): ?>
+                uimgs.append("<li><img src=\"" + url + "\" width=\"100px\" height=\"100px\" /><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"<?= $files ?>\">删除</a></li>");
+            <?php else: ?>
+                uimgs.append("<li><a href=\"" + url + "\" target=\"_blank\"><?= $files ?></a><a class=\"delete-uploaded\" data-target=\"<?= $inputId ?>\" data-key=\"<?= $files ?>\">删除</a></li>");
+            <?php endif; ?>
         <?php endif; ?>
     <?php endif; ?>
 

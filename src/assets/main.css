@@ -13,7 +13,34 @@
     margin-bottom: 2px;
 }
 
-.delete-uploaded {
+.uploaded-image-ul li .delete-uploaded {
     display: block;
     cursor: pointer;
 }
+
+.uploaded-file-ul {
+    list-style: none;
+    margin: 4px 0px;
+    padding: 0px;
+    width: auto;
+}
+
+.uploaded-file-ul li {
+    display: list-item;
+    /*float: left;*/
+    text-align: left;
+    margin-right: 2px;
+    margin-bottom: 2px;
+}
+
+.uploaded-file-ul li a {
+    display: block;
+    float: left;
+    margin-right: 10px;
+}
+
+.file li .delete-uploaded {
+    margin-left: 10px;
+    cursor: pointer;
+}
+
